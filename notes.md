@@ -11,3 +11,6 @@ venv in gitignore
 
 chmod +x run.sh
 
+git config pull.rebase true
+
+
