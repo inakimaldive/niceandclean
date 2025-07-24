@@ -35,3 +35,6 @@ Then, you will need to fill in the following variables:
 - `GHTOKEN`: A GitHub personal access token with the `repo` scope. You can create a new token in your GitHub developer settings.
 - `REPO_OWNER`: Your GitHub username.
 - `REPO_NAME`: The name of the repository where you want to store the blog posts.
+
+
+
