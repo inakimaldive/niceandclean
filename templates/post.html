@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ post.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .post-content { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>{{ post.title }}</h1>
+    <p><em>{{ post.date }}</em></p>
+    <div class="post-content">
+        {{ post.content | safe }}
+    </div>
+    <br>
+    <a href="{{ url_for('blog') }}">Back to Blog</a>
+</body>
+</html>

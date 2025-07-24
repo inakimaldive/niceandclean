@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GitHub Actions Trigger</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .button { 
+            padding: 10px 20px; 
+            background-color: #2ea44f; 
+            color: white; 
+            border: none; 
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .button:hover { background-color: #2c974b; }
+        .flash { 
+            padding: 10px; 
+            margin: 10px 0; 
+            border-radius: 4px; 
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .error { background-color: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>GitHub Actions Control Panel</h1>
+    <a href="{{ url_for('new_post') }}" class="button">Create New Post</a>
+    <a href="{{ url_for('blog') }}" class="button">View Blog</a>
+</body>
+</html>
