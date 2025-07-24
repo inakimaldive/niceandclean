@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Editor - Super-stack</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        :root {
+            /* Dark Tango Theme Colors */
+            --bg-primary: #1a1d21;
+            --bg-secondary: #22262c;
+            --bg-tertiary: #2d333b;
+            --bg-card: #161b22;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-tertiary: #6e7681;
+            --link-color: #58a6ff;
+            --link-hover: #79c0ff;
+            --accent-color: #238636;
+            --accent-hover: #2ea043;
+            --warning: #d29922;
+            --danger: #f85149;
+            --success: #3fb950;
+            
+            /* Tango-inspired accent colors */
+            --tango-blue: #3771c8;
+            --tango-orange: #ce5c00;
+            --tango-butter: #fce94f;
+            --tango-chocolate: #8f5902;
+            --tango-aluminium: #babdb6;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 16px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--tango-blue);
+            margin-right: 4px;
+        }
+
+        .logo span {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, var(--tango-blue), var(--tango-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 700px;
+            margin-right: 16px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--tango-blue);
+            box-shadow: 0 0 0 3px rgba(55, 113, 200, 0.3);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0 12px;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--link-color);
+        }
+
+        .nav-links a.active {
+            color: var(--link-color);
+            font-weight: 500;
+        }
+
+        .nav-links a i {
+            margin-right: 4px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            margin-left: 16px;
+            transition: color 0.2s;
+        }
+
+        .user-actions a:hover {
+            color: var(--link-hover);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tango-blue), var(--tango-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px solid var(--border-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            display: flex;
+            height: calc(100vh - 120px); /* Adjust height for editor */
+        }
+
+        /* Sidebar (File Tree) */
+        .sidebar {
+            width: 250px;
+            margin-right: 24px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .file-tree ul {
+            list-style: none;
+            padding-left: 15px;
+        }
+
+        .file-tree li {
+            margin-bottom: 4px;
+        }
+
+        .file-tree li a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .file-tree li a:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--link-color);
+        }
+
+        .file-tree li a.active {
+            background-color: rgba(55, 113, 200, 0.15);
+            color: var(--link-color);
+        }
+
+        .file-tree li a i {
+            margin-right: 8px;
+            color: var(--text-tertiary);
+            width: 16px;
+            text-align: center;
+        }
+
+        /* Main Content Area (Editor) */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-tertiary);
+        }
+
+        .editor-header span {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-right: 16px;
+        }
+
+        .editor-header .tab {
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: background-color 0.2s;
+        }
+
+        .editor-header .tab:hover {
+            background-color: var(--bg-card);
+        }
+
+        .editor-header .tab.active {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .editor-content {
+            flex: 1;
+            padding: 16px;
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            overflow-y: auto;
+            resize: none; /* Disable textarea resize handle */
+            border: none;
+            background-color: var(--bg-card);
+            outline: none;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-container {
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                height: auto;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 24px;
+                height: 300px; /* Fixed height for sidebar on small screens */
+            }
+            
+            .main-content {
+                height: 500px; /* Fixed height for editor on small screens */
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+                margin-top: 12px;
+                margin-right: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 24px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: var(--link-color);
+        }
+
+        .footer-info {
+            color: var(--text-tertiary);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .theme-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(90deg, var(--tango-blue), var(--tango-orange));
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>Super-stack</span>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search or jump to...">
+                </div>
+            </div>
+
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links">
+                <a href="superstack.html"><i class="fas fa-th"></i> Dashboard</a>
+                <a href="ai-agent.html"><i class="fas fa-robot"></i> AI Agent</a>
+                <a href="editor.html" class="active"><i class="fas fa-file-code"></i> Text Editor</a>
+                <a href="#"><i class="fas fa-play-circle"></i> Marketplace</a>
+                <a href="#"><i class="fas fa-compass"></i> Explore</a>
+            </div>
+            
+            <div class="user-actions">
+                <a href="#"><i class="fas fa-bell"></i></a>
+                <a href="#"><i class="fas fa-plus"></i></a>
+                <a href="#">
+                    <div class="user-avatar">JD</div>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar (File Tree) -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Explorer</h3>
+                <div class="file-tree">
+                    <ul>
+                        <li><a href="#"><i class="fas fa-folder"></i> src</a>
+                            <ul>
+                                <li><a href="#"><i class="fas fa-folder"></i> components</a>
+                                    <ul>
+                                        <li><a href="#"><i class="fas fa-file-code"></i> Button.js</a></li>
+                                        <li><a href="#"><i class="fas fa-file-code"></i> Navbar.js</a></li>
+                                    </ul>
+                                </li>
+                                <li><a href="#"><i class="fas fa-file-code"></i> App.js</a></li>
+                                <li><a href="#"><i class="fas fa-file-code"></i> index.js</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#"><i class="fas fa-folder"></i> public</a>
+                            <ul>
+                                <li><a href="#"><i class="fas fa-file"></i> index.html</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#" class="active"><i class="fas fa-file"></i> README.md</a></li>
+                        <li><a href="#"><i class="fas fa-file"></i> package.json</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area (Editor) -->
+        <div class="main-content">
+            <div class="editor-header">
+                <span class="tab active">README.md</span>
+                <span class="tab">App.js</span>
+                <span class="tab">index.html</span>
+            </div>
+            <textarea class="editor-content" spellcheck="false"># Super-stack Project
+
+This is a sample README.md file for your project.
+
+## Getting Started
+
+To get started with this project, clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/your-username/super-stack.git
+cd super-stack
+npm install
+npm start
+```
+
+## Features
+
+- **Dashboard:** Overview of your repositories and activity.
+- **AI Agent:** AI-powered code generation and documentation.
+- **Text Editor:** Minimalistic text editor with file tree view.
+- **Marketplace:** Discover and install plugins.
+- **Explore:** Find new projects and resources.
+
+## Technologies Used
+
+- HTML5
+- CSS3
+- JavaScript
+- Font Awesome for icons
+
+## Contributing
+
+Contributions are welcome! Please read our contributing guidelines for more information.
+
+## License
+
+This project is licensed under the MIT License.
+</textarea>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Security</a>
+                <a href="#">Status</a>
+                <a href="#">Docs</a>
+                <a href="#">Contact GitHub</a>
+                <a href="#">Pricing</a>
+                <a href="#">API</a>
+                <a href="#">Training</a>
+                <a href="#">Blog</a>
+                <a href="#">About</a>
+            </div>
+            <div class="footer-info">
+                &copy; 2023 GitHub Clone - Dark Tango Theme. This is a demonstration interface only.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple interaction for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle mobile menu
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinksContainer = document.querySelector('.nav-links');
+            menuToggle.addEventListener('click', function() {
+                navLinksContainer.classList.toggle('active');
+            });
+
+            // Simulate tab switching in editor
+            const editorTabs = document.querySelectorAll('.editor-header .tab');
+            const editorContent = document.querySelector('.editor-content');
+
+            editorTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    editorTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    // Simulate loading content based on tab
+                    editorContent.value = "Content for " + this.textContent;
+                });
+            });
+
+            // Simulate file tree navigation
+            const fileTreeLinks = document.querySelectorAll('.file-tree a');
+            fileTreeLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    fileTreeLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    // Simulate loading content based on file
+                    editorContent.value = "Content of " + this.textContent.trim();
+                    // Update active tab
+                    editorTabs.forEach(t => t.classList.remove('active'));
+                    // Create a new tab or activate existing one
+                    let existingTab = Array.from(editorTabs).find(tab => tab.textContent === this.textContent.trim());
+                    if (existingTab) {
+                        existingTab.classList.add('active');
+                    } else {
+                        // For demonstration, just update the first tab's text
+                        editorTabs[0].textContent = this.textContent.trim();
+                        editorTabs[0].classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

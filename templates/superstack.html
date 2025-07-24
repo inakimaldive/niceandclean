@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Clone - Dark Tango</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        :root {
+            /* Dark Tango Theme Colors */
+            --bg-primary: #1a1d21;
+            --bg-secondary: #22262c;
+            --bg-tertiary: #2d333b;
+            --bg-card: #161b22;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-tertiary: #6e7681;
+            --link-color: #58a6ff;
+            --link-hover: #79c0ff;
+            --accent-color: #238636;
+            --accent-hover: #2ea043;
+            --warning: #d29922;
+            --danger: #f85149;
+            --success: #3fb950;
+            
+            /* Tango-inspired accent colors */
+            --tango-blue: #3771c8;
+            --tango-orange: #ce5c00;
+            --tango-butter: #fce94f;
+            --tango-chocolate: #8f5902;
+            --tango-aluminium: #babdb6;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-right: 16px;
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: var(--tango-blue);
+            margin-right: 4px;
+        }
+
+        .logo span {
+            font-size: 20px;
+            font-weight: bold;
+            background: linear-gradient(90deg, var(--tango-blue), var(--tango-orange));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 700px;
+            margin-right: 16px;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 7px 12px 7px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .search-bar input:focus {
+            outline: none;
+            border-color: var(--tango-blue);
+            box-shadow: 0 0 0 3px rgba(55, 113, 200, 0.3);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin: 0 12px;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--link-color);
+        }
+
+        .nav-links a.active {
+            color: var(--link-color);
+            font-weight: 500;
+        }
+
+        .nav-links a i {
+            margin-right: 4px;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            margin-left: 16px;
+            transition: color 0.2s;
+        }
+
+        .user-actions a:hover {
+            color: var(--link-hover);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--tango-blue), var(--tango-orange));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            border: 2px solid var(--border-color);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 24px 16px;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            margin-right: 24px;
+        }
+
+        .sidebar-section {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            margin-bottom: 16px;
+            padding: 16px;
+        }
+
+        .sidebar-section h3 {
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .sidebar-section ul {
+            list-style: none;
+        }
+
+        .sidebar-section li {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-section a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-section a:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--link-color);
+        }
+
+        .sidebar-section a.active {
+            background-color: rgba(55, 113, 200, 0.15);
+            color: var(--link-color);
+        }
+
+        .sidebar-section a i {
+            margin-right: 8px;
+            color: var(--text-tertiary);
+            width: 16px;
+            text-align: center;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            flex: 1;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .btn {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 5px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--bg-card);
+            border-color: var(--tango-blue);
+        }
+
+        .btn-primary {
+            background-color: var(--tango-blue);
+            border-color: var(--tango-blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2a5cc7;
+            border-color: #2a5cc7;
+        }
+
+        .btn i {
+            margin-right: 4px;
+        }
+
+        /* Repository Cards */
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 16px;
+        }
+
+        .repo-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 16px;
+            transition: all 0.2s;
+        }
+
+        .repo-card:hover {
+            border-color: var(--tango-blue);
+            box-shadow: 0 0 0 1px var(--tango-blue);
+        }
+
+        .repo-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .repo-header i {
+            color: var(--tango-blue);
+            margin-right: 8px;
+        }
+
+        .repo-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--link-color);
+            text-decoration: none;
+        }
+
+        .repo-name:hover {
+            color: var(--link-hover);
+            text-decoration: underline;
+        }
+
+        .repo-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 12px;
+            min-height: 42px;
+        }
+
+        .repo-stats {
+            display: flex;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            flex-wrap: wrap;
+        }
+
+        .repo-stats span {
+            display: flex;
+            align-items: center;
+            margin-right: 16px;
+            margin-bottom: 4px;
+        }
+
+        .repo-stats i {
+            margin-right: 4px;
+        }
+
+        .repo-language {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 4px;
+        }
+
+        /* Language Colors */
+        .language-javascript { background-color: #f1e05a; }
+        .language-typescript { background-color: #3178c6; }
+        .language-css { background-color: #563d7c; }
+        .language-python { background-color: #3572A5; }
+        .language-java { background-color: #b07219; }
+        .language-go { background-color: #00ADD8; }
+
+        /* Activity Feed */
+        .activity-item {
+            display: flex;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .activity-icon i {
+            color: var(--tango-blue);
+            font-size: 14px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-content p {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .activity-content .time {
+            color: var(--text-tertiary);
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 65px;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                padding: 16px;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .search-container {
+                margin-right: auto;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                margin-right: 0;
+                margin-bottom: 24px;
+            }
+            
+            .repo-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+                margin-top: 12px;
+                margin-right: 0;
+            }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 24px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: var(--link-color);
+        }
+
+        .footer-info {
+            color: var(--text-tertiary);
+            font-size: 12px;
+            text-align: center;
+        }
+
+        .theme-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(90deg, var(--tango-blue), var(--tango-orange));
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i>
+                <span>Super-stack</span>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search or jump to...">
+                </div>
+            </div>
+
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <div class="nav-links">
+                <a href="blog.html"><i class="fas fa-th"></i> Dashboard</a>
+                <a href="qwen.html"><i class="fas fa-robot"></i> AI Agent</a>
+                <a href="editor.html"><i class="fas fa-file-code"></i> Text Editor</a>
+                <a href="marketplace.html"><i class="fas fa-play-circle"></i> Marketplace</a>
+                <a href="explore.html"><i class="fas fa-compass"></i> Explore</a>
+            </div>
+            
+            <div class="user-actions">
+                <a href="#"><i class="fas fa-bell"></i></a>
+                <a href="#"><i class="fas fa-plus"></i></a>
+                <a href="#">
+                    <div class="user-avatar">JD</div>
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3>Your profile</h3>
+                <ul>
+                    <li><a href="#" class="active"><i class="fas fa-user"></i> John Doe</a></li>
+                    <li><a href="#"><i class="fas fa-star"></i> Starred</a></li>
+                    <li><a href="#"><i class="fas fa-book"></i> Your repositories</a></li>
+                    <li><a href="#"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                    <li><a href="#"><i class="fas fa-bookmark"></i> Saved</a></li>
+                </ul>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3>Recent activity</h3>
+                <div class="activity-feed">
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>AI Agent generated documentation for <strong>awesome-project</strong></p>
+                            <div class="time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-file-code"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>Committed changes to <strong>main</strong> branch in <strong>react-dashboard</strong></p>
+                            <div class="time">5 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="activity-content">
+                            <p>Starred <strong>facebook/react</strong></p>
+                            <div class="time">1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="section-header">
+                <h2>Your repositories</h2>
+                <button class="btn btn-primary"><i class="fas fa-plus"></i> New</button>
+            </div>
+            
+            <div class="repo-grid">
+                <!-- Repository 1 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class="repo-name">awesome-project</a>
+                    </div>
+                    <p class="repo-description">A collection of awesome things for web development with modern tools and frameworks.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-javascript"></span> JavaScript</span>
+                        <span><i class="fas fa-star"></i> 128</span>
+                        <span><i class="fas fa-code-branch"></i> 24</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 3 days ago</span>
+                    </div>
+                </div>
+                
+                <!-- Repository 2 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class="repo-name">react-dashboard</a>
+                    </div>
+                    <p class="repo-description">Admin dashboard template built with React and Material-UI with dark mode support.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-typescript"></span> TypeScript</span>
+                        <span><i class="fas fa-star"></i> 86</span>
+                        <span><i class="fas fa-code-branch"></i> 12</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 1 week ago</span>
+                    </div>
+                </div>
+                
+                <!-- Repository 3 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class="repo-name">node-api-boilerplate</a>
+                    </div>
+                    <p class="repo-description">Boilerplate for RESTful APIs with Node.js and Express with authentication and testing.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-javascript"></span> JavaScript</span>
+                        <span><i class="fas fa-star"></i> 214</span>
+                        <span><i class="fas fa-code-branch"></i> 36</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 2 days ago</span>
+                    </div>
+                </div>
+                
+                <!-- Repository 4 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class="repo-name">css-framework</a>
+                    </div>
+                    <p class="repo-description">Lightweight CSS framework for modern web applications with flexbox and grid support.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-css"></span> CSS</span>
+                        <span><i class="fas fa-star"></i> 42</span>
+                        <span><i class="fas fa-code-branch"></i> 8</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 2 weeks ago</span>
+                    </div>
+                </div>
+                
+                <!-- Repository 5 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class="repo-name">mobile-app</a>
+                    </div>
+                    <p class="repo-description">Cross-platform mobile application using React Native with navigation and state management.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-typescript"></span> TypeScript</span>
+                        <span><i class="fas fa-star"></i> 67</span>
+                        <span><i class="fas fa-code-branch"></i> 15</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 5 days ago</span>
+                    </div>
+                </div>
+                
+                <!-- Repository 6 -->
+                <div class="repo-card">
+                    <div class="repo-header">
+                        <i class="fas fa-book"></i>
+                        <a href="#" class-name="repo-name">data-visualization</a>
+                    </div>
+                    <p class="repo-description">Interactive data visualization library for the web with D3.js and WebGL support.</p>
+                    <div class="repo-stats">
+                        <span><span class="repo-language language-javascript"></span> JavaScript</span>
+                        <span><i class="fas fa-star"></i> 156</span>
+                        <span><i class="fas fa-code-branch"></i> 28</span>
+                        <span><i class="fas fa-circle" style="color: var(--success); font-size: 8px;"></i> Updated 1 day ago</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="#">Terms</a>
+                <a href="#">Privacy</a>
+                <a href="#">Security</a>
+                <a href="#">Status</a>
+                <a href="#">Docs</a>
+                <a href="#">Contact GitHub</a>
+                <a href="#">Pricing</a>
+                <a href="#">API</a>
+                <a href="#">Training</a>
+                <a href="#">Blog</a>
+                <a href="#">About</a>
+            </div>
+            <div class="footer-info">
+                &copy; 2023 GitHub Clone - Dark Tango Theme. This is a demonstration interface only.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple interaction for demonstration
+        document.addEventListener('DOMContentLoaded', function() {
+            const repoCards = document.querySelectorAll('.repo-card');
+            
+            repoCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'A') {
+                        alert('Navigating to repository: ' + this.querySelector('.repo-name').textContent);
+                    }
+                });
+            });
+            
+            // Simulate search functionality
+            const searchInput = document.querySelector('.search-bar input');
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    alert('Searching for: ' + this.value);
+                }
+            });
+            
+            // Add active state to nav links
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Add active state to sidebar links
+            const sidebarLinks = document.querySelectorAll('.sidebar-section a');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sidebarLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Toggle mobile menu
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinksContainer = document.querySelector('.nav-links');
+            menuToggle.addEventListener('click', function() {
+                navLinksContainer.classList.toggle('active');
+            });
+        });
+    </script>
+</body>
+</html>
