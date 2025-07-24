@@ -9,7 +9,7 @@ import markdown
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='../templates')
+app = Flask(__name__, static_folder='../static', static_url_path='/static', template_folder='../templates')
 app.secret_key = os.urandom(24)  # For flash messages
 GITHUB_TOKEN = os.getenv('GHTOKEN')
 REPO_OWNER = os.getenv('REPO_OWNER')

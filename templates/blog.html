@@ -1,27 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Blog</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 40px; }
-        .post-card {
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .post-card h2 { margin-top: 0; }
-        .post-card a { text-decoration: none; color: #2ea44f; }
-    </style>
-</head>
-<body>
-    <h1>Blog Posts</h1>
-    <a href="{{ url_for('home') }}">Back to Home</a>
+{% extends "base.html" %}
+
+{% block title %}Blog{% endblock %}
+
+{% block content %}
+    <h2>Blog Posts</h2>
     {% for post in posts %}
-        <div class="post-card">
-            <h2><a href="{{ url_for('blog_post', post_name=post.id) }}">{{ post.title }}</a></h2>
+        <article class="post-card">
+            <h3><a href="{{ url_for('blog_post', post_name=post.id) }}">{{ post.title }}</a></h3>
             <p><em>{{ post.date }}</em></p>
-        </div>
+        </article>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
