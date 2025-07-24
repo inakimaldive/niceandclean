@@ -17,7 +17,7 @@ REPO_NAME = os.getenv('REPO_NAME')
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    return render_template('superstack.html')
 
 @app.route('/blog')
 def blog():
