@@ -14,3 +14,6 @@ chmod +x run.sh
 git config pull.rebase true
 
 
+chuta guai en local, en githubspaces, .... 
+
+ease deployment .. 

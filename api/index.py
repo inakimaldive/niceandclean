@@ -32,7 +32,10 @@ def blog():
                     posts.append({
                         'id': filename.replace('.md', ''),
                         'title': post.get('title', 'No Title'),
-                        'date': post.get('date', 'No Date')
+                        'date': post.get('date', 'No Date'),
+                        'author': post.get('author', 'Unknown Author'),
+                        'description': post.get('description', 'No description available.'),
+                        'tags': post.get('tags', [])
                     })
     return render_template('blog.html', posts=posts)
 
@@ -58,18 +61,30 @@ def new_post():
 @app.route('/create_post', methods=['POST'])
 def create_post():
     title = request.form.get('title')
+    author = request.form.get('author')
+    description = request.form.get('description')
+    tags_str = request.form.get('tags')
     content = request.form.get('content')
 
-    if not title or not content:
-        flash('Title and content are required.', 'error')
+    if not title or not author or not description or not content:
+        flash('Title, Author, Description, and Content are required.', 'error')
         return redirect(url_for('new_post'))
 
+    tags = [tag.strip() for tag in tags_str.split(',') if tag.strip()] if tags_str else []
+    tags_yaml = "\n".join([f"  - {tag}" for tag in tags]) if tags else ""
+
     # Create frontmatter
-    frontmatter = f"""---
+    frontmatter_content = f"""---
 title: {title}
+author: {author}
 date: {datetime.utcnow().isoformat()}
----
-"""
+description: {description}
+tags:
+{tags_yaml}
+---"""
+    
+    # Full content with frontmatter
+    full_content = f"{frontmatter_content}\n{content}"
     
     # Full content with frontmatter
     full_content = f"{frontmatter}\n{content}"

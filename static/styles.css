@@ -9,12 +9,13 @@ body {
 
 /* Main Container */
 main {
-    max-width: 800px;
+    max-width: 800px; /* Reverted to original max-width */
     margin: 20px auto;
     padding: 20px;
     background-color: #fff;
     border: 1px solid #d1d5da;
     border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(27, 31, 35, 0.04); /* Subtle shadow */
 }
 
 /* Header and Navigation */
@@ -75,29 +76,67 @@ a:hover {
     background-color: #2c974b;
 }
 
+/* Posts Grid - Reverted to block display for horizontal stacking */
+.posts-grid {
+    display: block;
+    margin-top: 20px;
+}
+
 /* Post Cards */
 .post-card {
-    border: 1px solid #d1d5da;
+    border: 1px solid #e1e4e8;
     border-radius: 6px;
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 20px;
+    margin-bottom: 16px; /* Add margin for vertical spacing */
     background-color: #fff;
+    box-shadow: 0 3px 10px rgba(27, 31, 35, 0.08); /* More prominent shadow for cards */
+    transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.post-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
 }
 
 .post-card h2, .post-card h3 {
     margin-top: 0;
-    margin-bottom: 8px;
-    font-size: 24px;
+    margin-bottom: 10px;
+    font-size: 22px;
 }
 
 .post-card h2 a, .post-card h3 a {
-    color: #24292e;
+    color: #0366d6;
+    text-decoration: none;
 }
 
-.post-card p {
-    margin-bottom: 0;
-    font-size: 12px;
+.post-card h2 a:hover, .post-card h3 a:hover {
+    text-decoration: underline;
+}
+
+.post-meta {
+    font-size: 13px;
     color: #586069;
+    margin-bottom: 10px;
+}
+
+.post-description {
+    font-size: 15px;
+    color: #24292e;
+    margin-bottom: 15px;
+}
+
+.post-tags {
+    margin-top: 10px;
+}
+
+.tag {
+    display: inline-block;
+    background-color: #e1e4e8;
+    color: #586069;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
 /* Form Styles */
@@ -161,4 +200,5 @@ footer {
     padding: 20px;
     color: #586069;
     font-size: 12px;
+    border-top: 1px solid #e1e4e8;
 }
