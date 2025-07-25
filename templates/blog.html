@@ -3,7 +3,10 @@
 {% block title %}Blog{% endblock %}
 
 {% block content %}
-    <h2>Blog Posts</h2>
+    <div class="blog-header">
+        <h2>Blog Posts</h2>
+        <a href="{{ url_for('new_post') }}" class="button">+ NEW</a>
+    </div>
     <div class="posts-grid">
         {% for post in posts %}
             <article class="post-card">
